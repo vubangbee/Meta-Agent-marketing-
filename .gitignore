@@ -21,3 +21,5 @@ scripts/logs/
 ad-report-*.txt
 # Playwright MCP runtime output (screenshots, snapshots, logs)
 .playwright-mcp/
+# Local browser profile (cookies, logins - never commit)
+browser-profile/

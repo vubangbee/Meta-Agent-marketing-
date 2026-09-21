@@ -10,10 +10,10 @@ Cần một MCP server Playwright dùng **profile riêng, cố định** để g
 # Chạy bằng Bash tool (git-bash), KHÔNG chạy bằng PowerShell:
 # wrapper PowerShell không truyền được "--" nên cờ sau đó bị hiểu sai.
 claude mcp add meta-agent-browser -s user -- npx -y @playwright/mcp@latest \
-  --user-data-dir "D:\VubangDigital\browser-profiles\meta-agent-marketing"
+  --user-data-dir "D:\VubangDigital\AI workspace\Meta agent marketing\browser-profile"
 ```
 
-- `--user-data-dir` phải nằm **ngoài ổ C** theo yêu cầu của user (dùng `D:\VubangDigital\browser-profiles\meta-agent-marketing`).
+- `--user-data-dir` nằm trong thư mục dự án (`browser-profile/`), đã gitignore nên không lộ cookie/login.
 - Sau khi thêm, nhờ user **đăng nhập tay một lần** vào `pancake.vn` và `business.facebook.com` trong cửa sổ trình duyệt đó. Cookie sẽ được giữ cho các phiên sau.
 - Kiểm tra: mở `pancake.vn` → thấy danh sách hội thoại chứ không phải màn hình đăng nhập.
 

@@ -4,7 +4,7 @@
   "mcp": {
     "meta-agent-browser": {
       "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp@latest", "--user-data-dir", "D:\\VubangDigital\\browser-profiles\\meta-agent-marketing", "--browser", "chrome"],
+      "command": ["npx", "-y", "@playwright/mcp@latest", "--user-data-dir", "D:\\VubangDigital\\AI workspace\\Meta agent marketing\\browser-profile", "--browser", "chrome"],
       "enabled": true
     }
   }
