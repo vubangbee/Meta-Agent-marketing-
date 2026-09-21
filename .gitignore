@@ -19,3 +19,5 @@ __pycache__/
 scripts/logs/
 *-report-*.txt
 ad-report-*.txt
+# Playwright MCP runtime output (screenshots, snapshots, logs)
+.playwright-mcp/
