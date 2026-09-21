@@ -1,11 +1,4 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "anthropic/claude-sonnet-4-5",
-  "mcp": {
-    "meta-agent-browser": {
-      "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp@latest", "--user-data-dir", "D:\\VubangDigital\\AI workspace\\Meta agent marketing\\browser-profile", "--browser", "chrome"],
-      "enabled": true
-    }
-  }
+  "model": "anthropic/claude-sonnet-4-5"
 }

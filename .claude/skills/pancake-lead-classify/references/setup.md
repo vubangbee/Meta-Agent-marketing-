@@ -6,11 +6,18 @@ Chỉ đọc khi máy chưa từng chạy quy trình này.
 
 Cần một MCP server Playwright dùng **profile riêng, cố định** để giữ đăng nhập Pancake + Facebook giữa các phiên.
 
-```bash
-# Chạy bằng Bash tool (git-bash), KHÔNG chạy bằng PowerShell:
-# wrapper PowerShell không truyền được "--" nên cờ sau đó bị hiểu sai.
-claude mcp add meta-agent-browser -s user -- npx -y @playwright/mcp@latest \
-  --user-data-dir "D:\VubangDigital\AI workspace\Meta agent marketing\browser-profile"
+MCP server Playwright (`meta-agent-browser`) đã khai báo sẵn trong `.mcp.json` ở root dự án (Claude Code project scope) — mở dự án bằng Claude Code và approve MCP khi được hỏi, không cần `claude mcp add` tay:
+
+```json
+// .mcp.json
+{
+  "mcpServers": {
+    "meta-agent-browser": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--user-data-dir", "D:\\VubangDigital\\AI workspace\\Meta agent marketing\\browser-profile", "--browser", "chrome"]
+    }
+  }
+}
 ```
 
 - `--user-data-dir` nằm trong thư mục dự án (`browser-profile/`), đã gitignore nên không lộ cookie/login.
