@@ -1,0 +1,504 @@
+<!--
+  TEMPLATE — biểu đồ "Độ chín của lead" (dumbbell, thang log, trung vị + p90 theo tag).
+  Gốc từ báo cáo 260817. Để vẽ lại với số liệu mới:
+    1. Chạy: python3 scripts/pancake_client.py lag-report --since <since> --until <until>
+    2. Dán từng tag vào mảng DATA trong <script> bên dưới (giữ đúng field: key/label/n/min/median/avg/p90/max).
+    3. Sửa 3 dòng trong .meta-strip (khoảng thời gian, tổng tin nhắn quét) và dòng lệnh ở footer.
+    4. Nếu lag mới có max rộng/hẹp hơn nhiều so với ~150 ngày, chỉnh D_MIN/D_MAX/gridTicks trong <script>
+       cho vừa khung (không bắt buộc — 0.18–150 ngày đã đủ rộng cho phần lớn trường hợp).
+    5. Publish bằng Artifact tool (favicon ⏳, giữ nguyên palette/type — đã theo dataviz + artifact-design skill,
+       không cần thiết kế lại từ đầu mỗi lần).
+  Xem plans/reports/benchmark-260817-1405-pancake-lag-full-year.md để đối chiếu số liệu gốc.
+-->
+<title>Độ Chín Của Lead</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page:          #f9f9f7;
+    --surface:       #fcfcfb;
+    --surface-2:     #f2f1ec;
+    --ink:           #0b0b0b;
+    --ink-secondary: #52514e;
+    --ink-muted:     #898781;
+    --line:          #e1e0d9;
+    --line-strong:   #c3c2b7;
+    --border:        rgba(11,11,11,0.10);
+    --accent-strong: #2a78d6;
+    --accent-soft:   #86b6ef;
+    --accent-wash:   rgba(42,120,214,0.07);
+    --tooltip-bg:    #0b0b0b;
+    --tooltip-ink:   #fcfcfb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page:          #0d0d0d;
+      --surface:       #1a1a19;
+      --surface-2:     #232321;
+      --ink:           #ffffff;
+      --ink-secondary: #c3c2b7;
+      --ink-muted:     #898781;
+      --line:          #2c2c2a;
+      --line-strong:   #383835;
+      --border:        rgba(255,255,255,0.10);
+      --accent-strong: #3987e5;
+      --accent-soft:   #6da7ec;
+      --accent-wash:   rgba(57,135,229,0.10);
+      --tooltip-bg:    #fcfcfb;
+      --tooltip-ink:   #0b0b0b;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page:          #0d0d0d;
+    --surface:       #1a1a19;
+    --surface-2:     #232321;
+    --ink:           #ffffff;
+    --ink-secondary: #c3c2b7;
+    --ink-muted:     #898781;
+    --line:          #2c2c2a;
+    --line-strong:   #383835;
+    --border:        rgba(255,255,255,0.10);
+    --accent-strong: #3987e5;
+    --accent-soft:   #6da7ec;
+    --accent-wash:   rgba(57,135,229,0.10);
+    --tooltip-bg:    #fcfcfb;
+    --tooltip-ink:   #0b0b0b;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
+    padding: 40px 20px 64px;
+  }
+
+  .mono {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, monospace;
+  }
+
+  .sheet {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 40px 44px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  /* ---- Header / letterhead ---- */
+  .eyebrow {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin: 0;
+  }
+  h1 {
+    font-size: 30px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 8px 0 0;
+    text-wrap: balance;
+  }
+  .dek {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-secondary);
+    margin: 10px 0 0;
+    max-width: 58ch;
+  }
+
+  .meta-strip {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 20px;
+  }
+  .meta-item .k {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .meta-item .v {
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  /* ---- Legend / key row ---- */
+  .key-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+    color: var(--ink-secondary);
+  }
+  .key-chip { display: inline-flex; align-items: center; gap: 7px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .dot.strong { background: var(--accent-strong); }
+  .dot.soft   { background: var(--accent-soft); }
+  .key-spacer { flex: 1 1 auto; min-width: 8px; }
+  .scale-note {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, monospace;
+  }
+
+  /* ---- Chart ---- */
+  .chart-wrap { overflow-x: auto; }
+  svg { display: block; width: 100%; height: auto; min-width: 560px; }
+
+  .row-hit { cursor: pointer; }
+  .row-hit:focus-visible .track { stroke: var(--accent-strong); }
+  .row-hit:focus-visible { outline: none; }
+  .track { stroke: var(--line); stroke-width: 1; }
+  .grid-line { stroke: var(--line); stroke-width: 1; }
+  .grid-label {
+    fill: var(--ink-muted);
+    font-size: 10.5px;
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, monospace;
+  }
+  .row-label {
+    fill: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .row-n {
+    fill: var(--ink-muted);
+    font-size: 11px;
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, monospace;
+  }
+  .bridge { stroke: var(--accent-soft); stroke-width: 2; stroke-linecap: round; }
+  .dot-median { fill: var(--accent-strong); stroke: var(--surface); stroke-width: 2; }
+  .dot-p90 { fill: var(--accent-soft); stroke: var(--surface); stroke-width: 2; }
+  .val-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .val-median { fill: var(--accent-strong); }
+  .val-p90 { fill: var(--ink-secondary); }
+  .row-wash { fill: transparent; }
+  .row-hit:hover .row-wash, .row-hit:focus-visible .row-wash { fill: var(--accent-wash); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .anim-row { animation: rise 0.5s cubic-bezier(.2,.7,.3,1) both; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- Tooltip ---- */
+  #tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: var(--tooltip-bg);
+    color: var(--tooltip-ink);
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 9px 12px;
+    border-radius: 4px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+    opacity: 0;
+    transform: translate(-50%, -100%) translateY(-10px);
+    transition: opacity 0.12s ease;
+    z-index: 20;
+    white-space: nowrap;
+  }
+  #tooltip.show { opacity: 1; }
+  #tooltip .tt-title { font-weight: 700; margin-bottom: 4px; }
+  #tooltip .tt-row { display: flex; gap: 10px; justify-content: space-between; font-variant-numeric: tabular-nums; }
+  #tooltip .tt-k { opacity: 0.65; }
+
+  /* ---- Table ---- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  caption {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, monospace;
+    margin-bottom: 10px;
+  }
+  th, td {
+    text-align: right;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  th:first-child, td:first-child { text-align: left; font-variant-numeric: normal; }
+  th {
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-weight: 600;
+  }
+  td:first-child { font-weight: 600; color: var(--ink); }
+  tbody tr:hover { background: var(--surface-2); }
+  .table-scroll { overflow-x: auto; }
+
+  /* ---- Footer ---- */
+  footer {
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  footer p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    max-width: 68ch;
+  }
+  footer code {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, monospace;
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink-secondary);
+  }
+
+  a { color: var(--accent-strong); }
+
+  @media (max-width: 620px) {
+    .sheet { padding: 28px 20px 24px; }
+    h1 { font-size: 24px; }
+    .meta-strip { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="sheet">
+
+  <div>
+    <p class="eyebrow">Pancake &middot; Benchmark vận hành</p>
+    <h1>Độ chín của lead</h1>
+    <p class="dek">Từ lúc một tin nhắn xuất hiện trong Pancake đến lúc từng nhãn hành vi được gắn lần đầu. Dùng để biết cần đợi bao lâu trước khi đánh giá một đợt quảng cáo — thay vì tắt sớm một target đang chạy tốt nhưng chưa kịp chín.</p>
+
+    <div class="meta-strip">
+      <div class="meta-item">
+        <span class="k">Khoảng thời gian</span>
+        <span class="v mono"><!-- TODO --></span>
+      </div>
+      <div class="meta-item">
+        <span class="k">Tin nhắn quét</span>
+        <span class="v mono"><!-- TODO --></span>
+      </div>
+      <div class="meta-item">
+        <span class="k">Nguồn</span>
+        <span class="v mono">lag-report · INBOX</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="key-row">
+    <span class="key-chip"><span class="dot strong"></span>Trung vị &mdash; 50% lead đã chuyển</span>
+    <span class="key-chip"><span class="dot soft"></span>p90 &mdash; 90% lead đã chuyển</span>
+    <span class="key-spacer"></span>
+    <span class="scale-note">thang log</span>
+  </div>
+
+  <div class="chart-wrap">
+    <svg id="chart" viewBox="0 0 760 372" role="img" aria-label="Biểu đồ độ trễ trung vị và p90 theo từng nhãn hành vi"></svg>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <caption>Bảng đầy đủ &middot; đơn vị: ngày</caption>
+      <thead>
+        <tr>
+          <th>Nhãn</th>
+          <th>n</th>
+          <th>Nhỏ nhất</th>
+          <th>Trung vị</th>
+          <th>Trung bình</th>
+          <th>p90</th>
+          <th>Lớn nhất</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <p>Lag = thời điểm sớm nhất một nhãn được gắn (<code>tag_histories[].inserted_at</code>) trừ <code>inserted_at</code> của tin nhắn. Không dùng để tính lại số lượng chuyển đổi theo phễu — phễu vẫn neo theo <code>inserted_at</code> của tin nhắn để đo đúng cohort theo tháng. Số điện thoại (<code>has_phone</code>) không có timestamp trong API Pancake nên không đo được lag riêng.</p>
+    <p class="mono"><!-- TODO: lệnh lag-report đã dùng --></p>
+  </footer>
+
+</div>
+
+<div id="tooltip" role="tooltip"></div>
+
+<script>
+(function () {
+  // TODO: thay bằng output thật của `lag-report` (+ `phone-lag-report` nếu có), giữ đúng field
+  // cho mỗi dòng. Thêm `note: true` cho dòng có nguồn khác tag_histories (vd: SĐT từ sheet ghi
+  // tay) — tự có dấu ⁺ bên cạnh nhãn; nhớ thêm 1 đoạn giải thích trong <footer> cho dòng đó.
+  var DATA = [
+    { key: "qm",   label: "QM (chất lượng)",   n: 0, min: 0, median: 0, avg: 0, p90: 0, max: 0 },
+    { key: "llk",  label: "Liên lạc khác",      n: 0, min: 0, median: 0, avg: 0, p90: 0, max: 0 },
+    { key: "hl",   label: "Hẹn lịch",           n: 0, min: 0, median: 0, avg: 0, p90: 0, max: 0 },
+    { key: "tv",   label: "Đã lên tư vấn",      n: 0, min: 0, median: 0, avg: 0, p90: 0, max: 0 },
+    { key: "pt",   label: "Đã phẫu thuật",      n: 0, min: 0, median: 0, avg: 0, p90: 0, max: 0 }
+  ];
+
+  var svgNS = "http://www.w3.org/2000/svg";
+  var svg = document.getElementById("chart");
+
+  var PLOT_X0 = 176, PLOT_X1 = 728;
+  var ROW_H = 62, ROW_Y0 = 14;
+  var D_MIN = 0.18, D_MAX = 150; // chỉnh nếu lag mới rộng/hẹp hơn nhiều
+
+  function xPos(days) {
+    var d = Math.max(days, D_MIN);
+    var t = (Math.log(d) - Math.log(D_MIN)) / (Math.log(D_MAX) - Math.log(D_MIN));
+    return PLOT_X0 + t * (PLOT_X1 - PLOT_X0);
+  }
+
+  function fmtDays(d) {
+    if (d < 0) return Math.round(d) + " ngày";
+    if (d < 1) return (d * 24).toFixed(0) + " giờ";
+    if (d < 10) return d.toFixed(1) + " ngày";
+    return Math.round(d) + " ngày";
+  }
+  function fmtTable(d) {
+    return d.toFixed(2).replace(".", ",");
+  }
+
+  function el(tag, attrs) {
+    var e = document.createElementNS(svgNS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  var plotBottom = ROW_Y0 + DATA.length * ROW_H;
+  var gridTicks = [1, 7, 30, 90];
+  var gridLabels = { 1: "1 ngày", 7: "1 tuần", 30: "1 tháng", 90: "1 quý" };
+
+  gridTicks.forEach(function (t) {
+    var x = xPos(t);
+    svg.appendChild(el("line", {
+      class: "grid-line", x1: x, x2: x, y1: ROW_Y0 - 4, y2: plotBottom + 4
+    }));
+    var lbl = el("text", { class: "grid-label", x: x, y: plotBottom + 20, "text-anchor": "middle" });
+    lbl.textContent = gridLabels[t];
+    svg.appendChild(lbl);
+  });
+
+  var tooltip = document.getElementById("tooltip");
+
+  DATA.forEach(function (d, i) {
+    var cy = ROW_Y0 + i * ROW_H + ROW_H / 2 - 6;
+    var g = el("g", { class: "anim-row" });
+    g.style.animationDelay = (i * 0.05) + "s";
+
+    var hit = el("g", { class: "row-hit", tabindex: "0", role: "img",
+      "aria-label": d.label + ": trung vị " + fmtDays(d.median) + ", p90 " + fmtDays(d.p90) + ", n=" + d.n });
+
+    hit.appendChild(el("rect", {
+      class: "row-wash", x: 0, y: ROW_Y0 + i * ROW_H, width: 760, height: ROW_H
+    }));
+
+    var label = el("text", { class: "row-label", x: 0, y: cy + 4 });
+    label.textContent = d.label + (d.note ? " ⁺" : ""); // set note:true on a row (e.g. phone-lag-report) sourced differently from tag_histories
+    hit.appendChild(label);
+
+    var nLabel = el("text", { class: "row-n", x: 0, y: cy + 20 });
+    nLabel.textContent = "n=" + d.n;
+    hit.appendChild(nLabel);
+
+    hit.appendChild(el("line", {
+      class: "track", x1: PLOT_X0, x2: PLOT_X1, y1: cy, y2: cy
+    }));
+
+    var xMed = xPos(d.median), xP90 = xPos(d.p90);
+
+    hit.appendChild(el("line", {
+      class: "bridge", x1: xMed, x2: xP90, y1: cy, y2: cy
+    }));
+    hit.appendChild(el("circle", { class: "dot-p90", cx: xP90, cy: cy, r: 6 }));
+    hit.appendChild(el("circle", { class: "dot-median", cx: xMed, cy: cy, r: 6 }));
+
+    var medLbl = el("text", { class: "val-label val-median", x: xMed, y: cy - 15, "text-anchor": "middle" });
+    medLbl.textContent = fmtDays(d.median);
+    hit.appendChild(medLbl);
+
+    var p90Lbl = el("text", { class: "val-label val-p90", x: xP90, y: cy - 15, "text-anchor": "middle" });
+    p90Lbl.textContent = fmtDays(d.p90);
+    hit.appendChild(p90Lbl);
+
+    function showTip(evt) {
+      tooltip.innerHTML =
+        '<div class="tt-title">' + d.label + '</div>' +
+        '<div class="tt-row"><span class="tt-k">n</span><span>' + d.n + '</span></div>' +
+        '<div class="tt-row"><span class="tt-k">nhỏ nhất</span><span>' + fmtDays(d.min) + '</span></div>' +
+        '<div class="tt-row"><span class="tt-k">trung vị</span><span>' + fmtDays(d.median) + '</span></div>' +
+        '<div class="tt-row"><span class="tt-k">trung bình</span><span>' + fmtDays(d.avg) + '</span></div>' +
+        '<div class="tt-row"><span class="tt-k">p90</span><span>' + fmtDays(d.p90) + '</span></div>' +
+        '<div class="tt-row"><span class="tt-k">lớn nhất</span><span>' + fmtDays(d.max) + '</span></div>';
+      tooltip.classList.add("show");
+      positionTip(evt);
+    }
+    function positionTip(evt) {
+      var rect = hit.getBoundingClientRect();
+      var x = evt && evt.clientX ? evt.clientX : rect.left + rect.width / 2;
+      var y = rect.top;
+      tooltip.style.left = x + "px";
+      tooltip.style.top = y + "px";
+    }
+    function hideTip() { tooltip.classList.remove("show"); }
+
+    hit.addEventListener("mousemove", positionTip);
+    hit.addEventListener("mouseenter", showTip);
+    hit.addEventListener("mouseleave", hideTip);
+    hit.addEventListener("focus", function (e) { showTip({ clientX: null }); positionTip({ clientX: hit.getBoundingClientRect().left + 40 }); });
+    hit.addEventListener("blur", hideTip);
+
+    g.appendChild(hit);
+    svg.appendChild(g);
+  });
+
+  svg.setAttribute("viewBox", "0 0 760 " + (plotBottom + 34));
+
+  var tbody = document.getElementById("table-body");
+  DATA.forEach(function (d) {
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td>" + d.label + "</td>" +
+      "<td>" + d.n + "</td>" +
+      "<td>" + fmtTable(d.min) + "</td>" +
+      "<td>" + fmtTable(d.median) + "</td>" +
+      "<td>" + fmtTable(d.avg) + "</td>" +
+      "<td>" + fmtTable(d.p90) + "</td>" +
+      "<td>" + fmtTable(d.max) + "</td>";
+    tbody.appendChild(tr);
+  });
+})();
+</script>

@@ -10,3 +10,12 @@ Thumbs.db
 # Build
 dist/
 build/
+# Skill runtime outputs (PII / secrets / logs)
+*.csv
+watch_tag_state.json
+tagcheck_*.json
+__pycache__/
+*.pyc
+scripts/logs/
+*-report-*.txt
+ad-report-*.txt
