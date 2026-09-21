@@ -14,13 +14,13 @@ MCP server Playwright (`meta-agent-browser`) đã khai báo sẵn trong `.mcp.js
   "mcpServers": {
     "meta-agent-browser": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest", "--user-data-dir", "D:\\VubangDigital\\AI workspace\\Meta agent marketing\\browser-profile", "--browser", "chrome"]
+      "args": ["-y", "@playwright/mcp@latest", "--user-data-dir", "${CLAUDE_PROJECT_DIR:-.}/browser-profile", "--browser", "chrome"]
     }
   }
 }
 ```
 
-- `--user-data-dir` nằm trong thư mục dự án (`browser-profile/`), đã gitignore nên không lộ cookie/login.
+- `--user-data-dir` nằm trong thư mục dự án (`browser-profile/`), đã gitignore nên không lộ cookie/login. Đường dẫn dùng `${CLAUDE_PROJECT_DIR}` (tương đối) nên chép cả dự án sang máy khác chạy ngay, không cần sửa path.
 - Sau khi thêm, nhờ user **đăng nhập tay một lần** vào `pancake.vn` và `business.facebook.com` trong cửa sổ trình duyệt đó. Cookie sẽ được giữ cho các phiên sau.
 - Kiểm tra: mở `pancake.vn` → thấy danh sách hội thoại chứ không phải màn hình đăng nhập.
 

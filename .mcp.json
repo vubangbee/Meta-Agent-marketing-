@@ -2,7 +2,7 @@
   "mcpServers": {
     "meta-agent-browser": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest", "--user-data-dir", "D:\\VubangDigital\\AI workspace\\Meta agent marketing\\browser-profile", "--browser", "chrome"]
+      "args": ["-y", "@playwright/mcp@latest", "--user-data-dir", "${CLAUDE_PROJECT_DIR:-.}/browser-profile", "--browser", "chrome"]
     }
   }
 }
