@@ -1,10 +1,10 @@
 ---
-name: ak:ads-management
+name: ads-management
 description: Activate for paid advertising campaigns on Google Ads, Meta Ads, LinkedIn Ads, TikTok Ads. Includes ad copywriting, audience targeting, budget optimization, A/B testing, ROAS tracking, and AI creative asset generation (images & videos) with ai-multimodal and ai-artist skills using Gemini Nano Banana Pro and Veo 3.1.
 argument-hint: "[platform] [campaign-type]"
 license: MIT
 metadata:
-  author: agentkit
+  author: vubangdigital
   version: "2.0.0"
 ---
 

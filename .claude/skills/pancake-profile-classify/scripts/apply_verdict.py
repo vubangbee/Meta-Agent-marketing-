@@ -36,7 +36,7 @@ def _resolve_client_dir(explicit: str | None) -> Path:
     if explicit:
         return Path(explicit)
     skills_dir = Path(__file__).resolve().parents[2]
-    return skills_dir / "ak-pancake-integration" / "scripts"
+    return skills_dir / "pancake-integration" / "scripts"
 
 
 def main() -> int:

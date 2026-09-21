@@ -68,7 +68,7 @@ Verified behavior: `since=2020-01-01&until=2020-01-02` → 0 results; `since=<to
 }
 ```
 
-**`ad_ids` / `ads` is the field that was missing from the earlier (wrong) endpoint guess** — this is real Meta ad attribution, verified by cross-checking returned `ad_id` values against known `ak-ads-management` target ad IDs (exact matches found for Target 1, Target 1.1, and Target Thẩm mỹ during testing).
+**`ad_ids` / `ads` is the field that was missing from the earlier (wrong) endpoint guess** — this is real Meta ad attribution, verified by cross-checking returned `ad_id` values against known `ads-management` target ad IDs (exact matches found for Target 1, Target 1.1, and Target Thẩm mỹ during testing).
 
 Note: `tags` list can contain `null` entries — always filter them out (`if t` / `if t is not None`) before accessing `.get()`.
 

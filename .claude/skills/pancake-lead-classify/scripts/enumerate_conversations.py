@@ -30,12 +30,12 @@ RATE_LIMIT_WARN_THRESHOLD = 170
 
 
 def _resolve_client_dir(explicit: str | None) -> Path:
-    """Tìm thư mục scripts của skill ak-pancake-integration (nơi có pancake_client.py)."""
+    """Tìm thư mục scripts của skill pancake-integration (nơi có pancake_client.py)."""
     if explicit:
         return Path(explicit)
-    # .../skills/ak-pancake-lead-classify/scripts/this_file.py -> .../skills/
+    # .../skills/pancake-lead-classify/scripts/this_file.py -> .../skills/
     skills_dir = Path(__file__).resolve().parents[2]
-    return skills_dir / "ak-pancake-integration" / "scripts"
+    return skills_dir / "pancake-integration" / "scripts"
 
 
 def main() -> int:
@@ -45,7 +45,7 @@ def main() -> int:
     ap.add_argument("--pages", required=True, help="Danh sách page_id, phân tách bằng dấu phẩy")
     ap.add_argument("--tags", default=DEFAULT_TAGS, help="Thẻ tag mục tiêu, phân tách bằng dấu phẩy (logic OR)")
     ap.add_argument("--out-dir", required=True, help="Thư mục ghi output (nên dùng scratchpad của phiên)")
-    ap.add_argument("--client-dir", default=None, help="Ghi đè đường dẫn tới scripts của ak-pancake-integration")
+    ap.add_argument("--client-dir", default=None, help="Ghi đè đường dẫn tới scripts của pancake-integration")
     args = ap.parse_args()
 
     client_dir = _resolve_client_dir(args.client_dir)

@@ -1,6 +1,8 @@
 ---
 name: pancake-crm
 description: Operate the user's Pancake CRM (crm.pancake.vn) workspace directly through its REST API — look up, create, and update Records (leads/accounts/contacts), Deals, Orders, Tickets, and Products, and look up Sources, Pancake Tags, and pipeline statuses. Use this whenever the user asks to find, check, create, or update a customer, lead, contact, deal, order, ticket, or product in "CRM" or "Pancake" (e.g. "tạo deal mới cho khách 0972...", "khách này có đơn hàng nào chưa", "cập nhật trạng thái deal sang đàm phán", "tag khách này là VIP", "thêm sản phẩm mới vào CRM", "doanh số tháng này", "báo cáo doanh số theo nguồn"), even if they don't say "API" or spell out "Pancake" in full — "CRM" alone is enough signal once credentials are configured. Do NOT use this for building a standalone SDK/client library as a coding deliverable (that's a normal coding task) or for Pancake's POS/e-commerce products unrelated to the CRM module.
+metadata:
+  author: vubangdigital
 ---
 
 # Pancake CRM operations

@@ -1,6 +1,8 @@
 ---
-name: ak-pancake-lead-classify
+name: pancake-lead-classify
 description: Hàng loạt phân loại "Giai đoạn khách hàng tiềm năng" = Đủ tiêu chuẩn trên Facebook Meta Business Suite cho các hội thoại Pancake khớp bộ thẻ tag + khoảng ngày tạo, rồi ghi note "Đã phân loại" qua Pancake API. Dùng khi user yêu cầu "phân loại hội thoại/khách hàng tiềm năng" cho hôm nay, hôm qua, tháng này, tháng trước, hoặc một khoảng ngày bất kỳ.
+metadata:
+  author: vubangdigital
 ---
 
 # Pancake → Meta Business Suite Lead Classification
@@ -54,7 +56,7 @@ Với mỗi hội thoại Pancake thỏa **(có ÍT NHẤT 1 trong N thẻ tag m
 | MCP browser Playwright có profile lưu cookie | Tool `mcp__<tên-server>__browser_*` khả dụng | Yêu cầu user setup (xem `references/setup.md`) |
 | **Cửa sổ trình duyệt rộng ≥ 1300px** | `browser_resize` width ≥ 1300 ngay đầu phiên | **Bắt buộc** — hẹp hơn, giao diện Pancake co lại và **ẩn luôn các nút cần thao tác** (icon ⓘ, "Xem trên Facebook") → mọi selector đều fail dù code đúng |
 | Đã đăng nhập sẵn Pancake + Facebook trong profile đó | Mở `pancake.vn` không thấy màn login | Nhờ user đăng nhập tay 1 lần, cookie sẽ được giữ |
-| Skill `ak-pancake-integration` + file `scripts/.env` có token | `python scripts/pancake_client.py test-connection` → `ok=True` | Yêu cầu user cấu hình `page_access_token_N` |
+| Skill `pancake-integration` + file `scripts/.env` có token | `python scripts/pancake_client.py test-connection` → `ok=True` | Yêu cầu user cấu hình `page_access_token_N` |
 | Biết `page_id` các fanpage mục tiêu | Có trong `.env` | Hỏi user |
 | Biết bộ thẻ tag mục tiêu | Mặc định 10 thẻ ở §4.1 | Hỏi user, đừng đoán |
 
@@ -74,7 +76,7 @@ Xác nhận đúng 3 thứ, nếu user đã nói rõ thì không cần hỏi l�
 ### Phase 1 — Liệt kê danh sách mục tiêu qua API
 
 ```bash
-python .claude/skills/ak-pancake-lead-classify/scripts/enumerate_conversations.py \
+python .claude/skills/pancake-lead-classify/scripts/enumerate_conversations.py \
   --since 2026-07-01 --until 2026-08-01 \
   --pages 108067022357425,107684028988499 \
   --out-dir <scratchpad>/lead-classify-2026-07
@@ -192,7 +194,7 @@ Vòng lặp cho mỗi tên:
 Sau **mỗi lô** Phase 4, gửi note cho **đúng những ca `status: ok`**:
 
 ```bash
-python .claude/skills/ak-pancake-lead-classify/scripts/send_notes.py \
+python .claude/skills/pancake-lead-classify/scripts/send_notes.py \
   --items '[{"i":3,"page_id":"108067022357425","pcid":"764f3c24-..."}, ...]'
 # hoặc: --file <đường dẫn json>  --message "Đã phân loại"
 ```

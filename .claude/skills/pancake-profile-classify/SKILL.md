@@ -1,6 +1,8 @@
 ---
-name: ak-pancake-profile-classify
+name: pancake-profile-classify
 description: Soi profile Facebook cá nhân của khách nhắn tin Pancake (hôm qua + hôm nay), đánh giá bằng mắt xem có phải khách hàng thẩm mỹ tiềm năng thật không, rồi gắn thẻ Remarketing (thật + phù hợp) hoặc Clone (nick ảo/spam, chắc chắn cao) trên Pancake. Dùng khi user yêu cầu "soi profile khách", "lọc nick ảo/clone", "kiểm tra khách hôm qua hôm nay xem thật hay giả", hoặc nhắc tới việc gắn thẻ Remarketing/Clone dựa trên đánh giá Facebook cá nhân.
+metadata:
+  author: vubangdigital
 ---
 
 # Pancake → Facebook Profile Authenticity Classification
@@ -70,10 +72,10 @@ Với mỗi hội thoại Pancake được **tạo trong khoảng ngày X→Y** 
 | Thành phần | Kiểm tra | Nếu thiếu |
 |---|---|---|
 | MCP browser có profile lưu cookie, **đã cài extension "Pancake v2"** | Xem `references/browser-mechanics.md` mục 2 | Cài extension (liên hệ Pancake/người quản lý tài khoản), hoặc yêu cầu người vận hành cài tay |
-| Cửa sổ trình duyệt rộng ≥ 1300px | `browser_resize` width ≥ 1300 đầu phiên | Bắt buộc — Pancake ẩn nút thao tác khi hẹp hơn (cùng ràng buộc như `ak-pancake-lead-classify`) |
+| Cửa sổ trình duyệt rộng ≥ 1300px | `browser_resize` width ≥ 1300 đầu phiên | Bắt buộc — Pancake ẩn nút thao tác khi hẹp hơn (cùng ràng buộc như `pancake-lead-classify`) |
 | Đã đăng nhập sẵn Pancake + Facebook trong profile trình duyệt đó | Mở `pancake.vn` không thấy màn login | Nhờ người vận hành đăng nhập tay 1 lần |
 | (Tuỳ chọn, tăng độ chính xác) Đã đăng nhập sẵn Zalo Web | Mở `chat.zalo.me` không thấy màn login | Bỏ qua bước đối chiếu Zalo nếu không có — vẫn chạy được phần còn lại |
-| Skill `ak-pancake-integration` + `.env` có token | `python .claude/skills/ak-pancake-integration/scripts/pancake_client.py test-connection` → `ok=True` | Cấu hình `page_access_token_N` |
+| Skill `pancake-integration` + `.env` có token | `python .claude/skills/pancake-integration/scripts/pancake_client.py test-connection` → `ok=True` | Cấu hình `page_access_token_N` |
 | Thẻ `Clone` đã tồn tại trên Pancake | `get_tags(page_id)` thấy nhãn `Clone` | Tạo thẻ mới tên `Clone` trên Pancake trước khi chạy |
 | Biết `page_id` các fanpage mục tiêu | Mặc định `bacsidacquang` (108067022357425) + `drDacQuang` (107684028988499) | Hỏi người vận hành nếu khác |
 
@@ -92,7 +94,7 @@ Không cần hỏi lại nếu người vận hành đã nói rõ trong yêu c�
 ### Phase 1 — Liệt kê worklist + tín hiệu rẻ
 
 ```bash
-python .claude/skills/ak-pancake-profile-classify/scripts/find_worklist.py \
+python .claude/skills/pancake-profile-classify/scripts/find_worklist.py \
   --since 2026-09-09 --until 2026-09-11 \
   --pages 108067022357425,107684028988499 \
   --out-dir <scratchpad>/profile-classify-2026-09-10
@@ -127,7 +129,7 @@ Gom các verdict đã quyết ở bước 1-2 lại, gửi cùng đợt Phase 5 
 2. Xác nhận extension "Pancake v2" đang bật — `references/browser-mechanics.md` mục 2.
 3. Mở đúng fanpage đang xử lý trên Pancake (`pancake.vn/<slug>`), áp bộ lọc tag/ngày nếu cần
    định vị bằng UI — tái sử dụng cơ chế cuộn virtual-list đã có ở
-   `ak-pancake-lead-classify/references/browser-playbook.md` mục 1-2 (quét cửa sổ, xác minh tên
+   `pancake-lead-classify/references/browser-playbook.md` mục 1-2 (quét cửa sổ, xác minh tên
    trước khi click, không nhảy theo công thức px).
 
 ### Phase 4 — Duyệt & đánh giá từng ca (phần còn lại sau Phase 2)
@@ -158,7 +160,7 @@ Gom verdict theo lô 10-20 ca trước khi sang Phase 5 (không gọi API từng
 ### Phase 5 — Áp verdict qua API (theo lô)
 
 ```bash
-python .claude/skills/ak-pancake-profile-classify/scripts/apply_verdict.py --items '[
+python .claude/skills/pancake-profile-classify/scripts/apply_verdict.py --items '[
   {"i":0,"page_id":"108067022357425","c_id":"108067022357425_123",
    "pcid":"764f3c24-...","verdict":"Remarketing"},
   {"i":1,"page_id":"108067022357425","c_id":"108067022357425_456",
@@ -205,7 +207,7 @@ Báo người vận hành (ngắn gọn):
 
 ## 6. Guardrail: giới hạn mở profile Facebook / ngày
 
-Khác với `ak-pancake-lead-classify` (mở tab Meta Business Suite, ngưỡng rate-limit ~170-200 do
+Khác với `pancake-lead-classify` (mở tab Meta Business Suite, ngưỡng rate-limit ~170-200 do
 Facebook khoá cấp tài khoản doanh nghiệp), quy trình này mở **profile Facebook thường** bằng
 phiên trình duyệt cá nhân đã đăng nhập. Người vận hành tự đặt ngưỡng: **~100 lượt mở/ngày** để
 tránh bị Facebook hạn chế phiên đăng nhập đó.
@@ -259,7 +261,7 @@ User: "Soi profile khách hôm qua với hôm nay, 2 trang"
 - `scripts/find_worklist.py` — liệt kê worklist + tín hiệu rẻ (copy-paste dòng lệnh, đổi ngày/page).
 - `scripts/apply_verdict.py` — gắn thẻ + ghi note qua API theo lô.
 - `assets/scan-profile.js` — quét tín hiệu chữ trên tab profile Facebook (copy-paste).
-- `ak-pancake-lead-classify/references/browser-playbook.md` mục 1-2 — cơ chế virtual-list/
+- `pancake-lead-classify/references/browser-playbook.md` mục 1-2 — cơ chế virtual-list/
   lazy-load của danh sách hội thoại Pancake (dùng chung, không viết lại).
 
 ## 9. Nguyên tắc tối ưu token

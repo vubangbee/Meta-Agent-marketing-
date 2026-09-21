@@ -33,10 +33,10 @@ await page.setViewportSize({ width: 1400, height: 900 });
 
 ## 2. Token API Pancake (cho enumerate + note)
 
-Dùng lại skill `ak-pancake-integration`:
+Dùng lại skill `pancake-integration`:
 
 ```
-.claude/skills/ak-pancake-integration/scripts/.env
+.claude/skills/pancake-integration/scripts/.env
 ```
 
 ```
@@ -49,7 +49,7 @@ page_access_token_2=<...>
 - Lấy token: trong Pancake, mỗi Fanpage có mục **"Public API access token"** riêng. **Không** dùng token đăng nhập tài khoản — loại đó không hoạt động với API này.
 - Kiểm tra:
   ```bash
-  cd .claude/skills/ak-pancake-integration/scripts && python pancake_client.py test-connection
+  cd .claude/skills/pancake-integration/scripts && python pancake_client.py test-connection
   # kỳ vọng: ok=True cho từng page
   ```
 
@@ -59,7 +59,7 @@ Nhãn tag phải khớp **chính xác từng ký tự** (kể cả dấu tiếng
 
 ```bash
 python -c "
-import sys; sys.path.insert(0, '.claude/skills/ak-pancake-integration/scripts')
+import sys; sys.path.insert(0, '.claude/skills/pancake-integration/scripts')
 import pancake_client as pc
 pages = pc._known_pages()
 for idx,(pid,tok) in pages.items():

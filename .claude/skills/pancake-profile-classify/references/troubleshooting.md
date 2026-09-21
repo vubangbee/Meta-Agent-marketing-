@@ -44,7 +44,7 @@ Nếu vẫn rỗng và trang rõ ràng có nội dung khi xem bằng mắt (qua 
 
 ## F. Nghi bị Facebook hạn chế do mở quá nhiều profile trong ngày
 
-Khác với rate-limit của Meta Business Suite (`ak-pancake-lead-classify` — mở tab MBS, dùng
+Khác với rate-limit của Meta Business Suite (`pancake-lead-classify` — mở tab MBS, dùng
 xác thực doanh nghiệp), đây là việc mở **profile Facebook thường** bằng phiên trình duyệt cá
 nhân/đã đăng nhập. Người vận hành đã tự đặt ngưỡng ~100 lượt/ngày để tránh việc này (xem
 SKILL.md §6). Nếu bắt đầu thấy:
@@ -73,7 +73,7 @@ Lỗi hay gặp khi debug: bấm `Escape` 2 lần liên tiếp khi chỉ có 1 l
   (kể cả dấu tiếng Việt/viết hoa). Kiểm tra bằng `pancake_client.get_tags(page_id)`, đối chiếu
   lại đúng chuỗi nhãn.
 - `no page_access_token configured for page_id` → thiếu cấu hình `.env` của skill
-  `ak-pancake-integration` — xem `ak-pancake-lead-classify/references/setup.md` mục 2.
+  `pancake-integration` — xem `pancake-lead-classify/references/setup.md` mục 2.
 - `pcid` sai / lỗi ghi note → chắc chắn đang dùng `page_customer_id` (UUID), KHÔNG phải `c_id`
   (dạng `<page_id>_<số>`).
 - Lỗi mạng/500 lẻ tẻ → chạy lại đúng lô đó; `set_conversation_tag` đã xác nhận idempotent (gắn

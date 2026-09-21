@@ -2,7 +2,7 @@
 LOAI TRU nhung hoi thoai da mang san 1 trong cac the trong --exclude-tags (mac dinh RAC,Clone
 - da xu ly roi, khong soi lai). Xuat JSON dung cho pha soi profile tren trinh duyet.
 
-Vi sao tach rieng khoi enumerate_conversations.py (skill ak-pancake-lead-classify): quy trinh do
+Vi sao tach rieng khoi enumerate_conversations.py (skill pancake-lead-classify): quy trinh do
 loc THEO the tag muc tieu (OR), quy trinh nay loc THEO khoang ngay va LOAI TRU theo the - nguoc
 huong loc. Dung chung 1 script se phai nhoi 2 logic loc trai nguoc vao 1 flag, de gay nham.
 
@@ -45,7 +45,7 @@ SALE_HOT_TAGS = {"B", "QM"}
 
 # Gioi han tu ap (user, 2026-09-10): "soi facebook lien tuc thi toi moi ngay khoang 100 link,
 # khong qua nhieu de FB han che" - day la mo profile Facebook THUONG, KHAC voi nguong 170-200
-# cua Meta Business Suite trong skill ak-pancake-lead-classify (do la mo tab MBS, co che khac).
+# cua Meta Business Suite trong skill pancake-lead-classify (do la mo tab MBS, co che khac).
 DAILY_OPEN_WARN_THRESHOLD = 100
 
 
@@ -53,7 +53,7 @@ def _resolve_client_dir(explicit: str | None) -> Path:
     if explicit:
         return Path(explicit)
     skills_dir = Path(__file__).resolve().parents[2]
-    return skills_dir / "ak-pancake-integration" / "scripts"
+    return skills_dir / "pancake-integration" / "scripts"
 
 
 def _default_since_until() -> tuple[str, str]:
@@ -75,7 +75,7 @@ def main() -> int:
     ap.add_argument("--exclude-tags", default=DEFAULT_EXCLUDE_TAGS,
                      help="The da xu ly, loai khoi worklist (phan tach bang dau phay)")
     ap.add_argument("--out-dir", required=True, help="Thu muc ghi output (nen dung scratchpad cua phien)")
-    ap.add_argument("--client-dir", default=None, help="Ghi de duong dan toi scripts cua ak-pancake-integration")
+    ap.add_argument("--client-dir", default=None, help="Ghi de duong dan toi scripts cua pancake-integration")
     args = ap.parse_args()
 
     client_dir = _resolve_client_dir(args.client_dir)

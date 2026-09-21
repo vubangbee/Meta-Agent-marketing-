@@ -32,7 +32,7 @@ from pancake_auto_spam_tagged import find_and_spam_tagged
 
 _load_env()
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]  # scripts -> ak-pancake-integration -> skills -> .claude -> root
+PROJECT_ROOT = Path(__file__).resolve().parents[4]  # scripts -> pancake-integration -> skills -> .claude -> root
 REPORTS_DIR = PROJECT_ROOT / "plans" / "reports"
 
 

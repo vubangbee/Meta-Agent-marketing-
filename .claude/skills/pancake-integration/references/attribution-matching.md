@@ -9,10 +9,10 @@ Google Sheet row (SĐT, LINK containing c_id=<page_id>_<conv_id>)
   → match row's c_id against fetched conversation "id" field
   → conversation.ad_ids gives the real Meta ad ID(s) directly — no extra Pancake call needed
   → (optional) Meta Ads API: Ad(ad_id).api_get(fields=['campaign','adset']) to resolve to a
-    known ak-ads-management target
+    known ads-management target
 ```
 
-This works end-to-end — verified by resolving a real lead sheet and finding ad_ids that exactly matched known ad IDs from `ak-ads-management` target templates (Target 1.1's "HMB 18tr" ad and Target Thẩm mỹ's "Mỡ 11 Ver 1" ad both appeared correctly).
+This works end-to-end — verified by resolving a real lead sheet and finding ad_ids that exactly matched known ad IDs from `ads-management` target templates (Target 1.1's "HMB 18tr" ad and Target Thẩm mỹ's "Mỡ 11 Ver 1" ad both appeared correctly).
 
 ## Practical notes
 
@@ -21,6 +21,6 @@ This works end-to-end — verified by resolving a real lead sheet and finding ad
 - **A conversation can have multiple `ad_ids`** (a customer may have clicked more than one ad before messaging, or the conversation continued across multiple ad touches) — `resolve-batch` joins them comma-separated in the output; decide per-report whether to use the first, the most recent (`ads[].inserted_at`), or count it toward all of them.
 - **Post ID (from `ads[].post_id`) is still not 1:1 with a campaign/target** — the same post can back multiple ads (see the original caveat, still true), but you no longer need post_id for attribution since `ad_ids` is direct. Post ID matching is now only a fallback if `ad_ids` is empty on a conversation.
 
-## Joining against ak-ads-management targets
+## Joining against ads-management targets
 
-Once you have a resolved `ad_id`, cross-reference it against the campaign/adset IDs recorded in `ak-ads-management`'s target template reports (`plans/reports/export-*-template.md` and the `ads-target-naming-convention` memory) — either by looking up `Ad(ad_id).api_get(fields=['campaign','adset'])` via Meta's API, or by pattern-matching the ad_id prefix against known campaign ID prefixes (same account tends to produce IDs with a shared suffix, e.g. `...053` = 6707, `...613` = 5832, `...690` = 3798 — useful as a quick eyeball check, not a substitute for the real API lookup).
+Once you have a resolved `ad_id`, cross-reference it against the campaign/adset IDs recorded in `ads-management`'s target template reports (`plans/reports/export-*-template.md` and the `ads-target-naming-convention` memory) — either by looking up `Ad(ad_id).api_get(fields=['campaign','adset'])` via Meta's API, or by pattern-matching the ad_id prefix against known campaign ID prefixes (same account tends to produce IDs with a shared suffix, e.g. `...053` = 6707, `...613` = 5832, `...690` = 3798 — useful as a quick eyeball check, not a substitute for the real API lookup).

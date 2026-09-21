@@ -1016,7 +1016,7 @@ def cmd_ad_report(args):
 
 def cmd_list_by_ad(args):
     """List conversations whose ad_ids include a given Meta ad_id — the reverse lookup
-    of ak-ads-management's campaign/adset IDs back to real Pancake conversations."""
+    of ads-management's campaign/adset IDs back to real Pancake conversations."""
     pages = _known_pages()
     if not pages:
         print("ERROR: no pages configured in scripts/.env")

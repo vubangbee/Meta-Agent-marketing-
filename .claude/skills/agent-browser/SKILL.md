@@ -1,5 +1,5 @@
 ---
-name: ak:agent-browser
+name: agent-browser
 description: Browser and desktop automation through the agent-browser CLI. Use for long autonomous browsing, compact page snapshots, screenshots, form filling, login/test flows without real Chrome profile state, scraping, exploratory QA, cloud browsers, Electron apps, Slack automation, and bug hunts.
 user-invocable: true
 when_to_use: "Invoke for browser/app automation that needs snapshots or clicks and does not require the user's real Chrome profile state."
@@ -9,7 +9,7 @@ license: Apache-2.0
 allowed-tools: Bash(agent-browser:*), Bash(npx agent-browser:*)
 argument-hint: "[url or task]"
 metadata:
-  author: agentkit
+  author: vubangdigital
   version: "2.0.1"
   upstream: "vercel-labs/agent-browser"
 ---
@@ -18,7 +18,7 @@ metadata:
 
 Fast browser automation CLI for AI agents. Chrome/Chromium via CDP with accessibility-tree snapshots and compact `@eN` element refs (~280 chars/snapshot vs 8K+ for Playwright MCP).
 
-Use `ak:agent-browser` for browser testing, screenshots, form fills, scraping, exploratory QA, bug hunts, cloud browsers, Electron apps, Slack automation, and flows where a fresh or tool-managed browser is fine. Prefer it over generic browser tools for profile-independent browser work.
+Use `agent-browser` for browser testing, screenshots, form fills, scraping, exploratory QA, bug hunts, cloud browsers, Electron apps, Slack automation, and flows where a fresh or tool-managed browser is fine. Prefer it over generic browser tools for profile-independent browser work.
 
 Use `ak:chrome-profile` instead when the task needs the user's actual Chrome profile: existing cookies, logged-in sessions, a specific Google account, a tenant/workspace already open in daily Chrome, or deterministic targeting across multiple Chrome profiles.
 

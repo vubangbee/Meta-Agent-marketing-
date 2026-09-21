@@ -67,7 +67,7 @@ const profileUrl = fbPage.url();
 
 ⚠️ Trước khi click avatar, phải **đang mở đúng hội thoại của đúng khách** trong khung chat —
 việc định vị đúng dòng trong danh sách (cuộn ảo, xác minh tên trước khi click) dùng đúng cơ
-chế đã mô tả ở `ak-pancake-lead-classify/references/browser-playbook.md` mục 1-2 (virtual list,
+chế đã mô tả ở `pancake-lead-classify/references/browser-playbook.md` mục 1-2 (virtual list,
 lazy-load, quét cửa sổ thay vì nhảy theo công thức px) — tái sử dụng nguyên xi, không viết lại.
 
 **Ca lỗi:** click không mở tab nào → thử lại 1 lần; vẫn lỗi → bỏ qua ca đó, đưa vào danh sách
@@ -132,5 +132,5 @@ Bấm `Escape` thừa 1 lần sẽ đóng luôn thẻ thông tin đang cần xem
 - Đọc kết quả quét bằng JSON nhỏ, không dump `innerText`/`outerHTML` toàn trang trừ khi đang
   triage lỗi thật.
 - Giới hạn tự áp ~100 lượt mở profile Facebook thường/ngày (khác với ngưỡng rate-limit Meta
-  Business Suite 170-200 của `ak-pancake-lead-classify` — đó là mở tab MBS, quy trình này mở
+  Business Suite 170-200 của `pancake-lead-classify` — đó là mở tab MBS, quy trình này mở
   tab Facebook thường, cơ chế hạn chế khác nhau) — xem SKILL.md §6.

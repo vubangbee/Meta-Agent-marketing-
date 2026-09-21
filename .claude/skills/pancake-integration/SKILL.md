@@ -1,10 +1,10 @@
 ---
-name: ak:pancake-integration
-description: Resolve Facebook ad attribution (ad_id) and sale-assigned tags for Pancake CRM/Messenger conversations, confirmed working against the real Pancake public API (pages.fm) as of 2026-08-14. Use when reconciling lead/revenue Google Sheets against specific Meta Ads campaigns/targets. Pairs with ak-ads-management for cost-per-lead / ROAS-per-target reporting.
+name: pancake-integration
+description: Resolve Facebook ad attribution (ad_id) and sale-assigned tags for Pancake CRM/Messenger conversations, confirmed working against the real Pancake public API (pages.fm) as of 2026-08-14. Use when reconciling lead/revenue Google Sheets against specific Meta Ads campaigns/targets. Pairs with ads-management for cost-per-lead / ROAS-per-target reporting.
 argument-hint: "[conversation-url-or-id]"
 license: MIT
 metadata:
-  author: agentkit
+  author: vubangdigital
   version: "1.2.0"
   status: confirmed-working
 ---
@@ -273,11 +273,11 @@ mid-afternoon on the 27th covers the 1st through this afternoon, not the 1st thr
 minutes for a 27-day month across 4 pages on this account. That's a report you run and wait
 on, not something to schedule every few minutes; `watch-tag` (above) is the near-realtime tool.
 
-## Combine with ak-ads-management
+## Combine with ads-management
 
 1. Run `resolve-batch` on your lead/revenue sheet to get `ad_id` per row.
-2. Look up each `ad_id` via Meta's API (`Ad(ad_id).api_get(fields=['campaign','adset'])`, same pattern `ak-ads-management`'s scripts already use) to get the real campaign/adset.
-3. Cross-reference against the campaign/adset IDs recorded in `ak-ads-management`'s target templates (`plans/reports/export-*-template.md`, `ads-target-naming-convention` memory) to attribute revenue/leads to a specific named target ("Target 11", "Target 5", etc.) instead of relying on Meta's own lead-count proxy.
+2. Look up each `ad_id` via Meta's API (`Ad(ad_id).api_get(fields=['campaign','adset'])`, same pattern `ads-management`'s scripts already use) to get the real campaign/adset.
+3. Cross-reference against the campaign/adset IDs recorded in `ads-management`'s target templates (`plans/reports/export-*-template.md`, `ads-target-naming-convention` memory) to attribute revenue/leads to a specific named target ("Target 11", "Target 5", etc.) instead of relying on Meta's own lead-count proxy.
 
 ## Security
 
@@ -293,4 +293,4 @@ on, not something to schedule every few minutes; `watch-tag` (above) is the near
 | Topic | File |
 |-------|------|
 | Confirmed endpoint, auth, query params, schema | `references/api-reference.md` |
-| End-to-end attribution chain & how to join with ak-ads-management targets | `references/attribution-matching.md` |
+| End-to-end attribution chain & how to join with ads-management targets | `references/attribution-matching.md` |
